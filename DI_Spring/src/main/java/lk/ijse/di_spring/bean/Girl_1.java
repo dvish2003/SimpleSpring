@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
  * Description:
  */
 @Component
-public class Girl implements Aggrement{
-    public Girl() {
+public class Girl_1 implements Aggrement{
+    public Girl_1() {
         System.out.println("I am Girl constructor");
     }
 

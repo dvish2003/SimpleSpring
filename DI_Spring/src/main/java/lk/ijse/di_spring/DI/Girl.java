@@ -6,5 +6,12 @@ package lk.ijse.di_spring.DI;
  * Time: 11:33 AM
  * Description:
  */
-public class Girl {
+public class Girl implements Agrement {
+    public Girl() {
+    }
+
+    @Override
+    public void chat() {
+        System.out.println("Chat with voy");
+    }
 }

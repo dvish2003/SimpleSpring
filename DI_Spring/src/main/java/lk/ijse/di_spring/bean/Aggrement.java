@@ -7,4 +7,5 @@ package lk.ijse.di_spring.bean;
  * Description:
  */
 public interface Aggrement {
+    public void chat();
 }

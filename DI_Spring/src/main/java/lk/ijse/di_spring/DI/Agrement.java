@@ -6,7 +6,6 @@ package lk.ijse.di_spring.DI;
  * Time: 11:34 AM
  * Description:
  */
-public interface Aggrement {
+public interface Agrement {
     public void chat();
-
 }
