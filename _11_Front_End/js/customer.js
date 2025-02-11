@@ -1,31 +1,128 @@
-function saveCustomer() {
-    let ID = $('#customerId').val();
-    let Name = $('#customerName').val();
-    let Address = $('#customerAddress').val();
-    let Age = $('#customerAge').val();
+const baseURL = "http://localhost:8080/BackEnd_10_Web_exploded/api/v1/customer";
 
-    // Check the data in the console
-    console.log("Saving Customer: ", ID, Name, Address, Age);
+$(document).ready(function () {
+    getCustomers();
+});
 
+// Get all customers
+function getCustomers() {
     $.ajax({
-        url: 'http://localhost:8080/BackEnd_10_Web_exploded/api/v1/customer/save',
-        type: 'POST',
-        contentType: 'application/json',
-        async: true,
-        data: JSON.stringify({
-            "id": ID,
-            "name": Name,
-            "address": Address,
-            "age": Age
-        }),
-        success: function(data) {
-            console.log("Customer Saved:", data);
-            alert("Customer saved successfully!");
+        url: (baseURL + "/getAll"),
+        method: "GET",
+        dataType: "json",
+        success: function (response) {
 
+            const tableBody = $("#customer_tbody");
+            const customers = response;
+            tableBody.empty();
+
+            customers.forEach(customer => {
+                tableBody.append(`
+                <tr data-id="${customer.id}" data-name="${customer.name}" 
+                    data-address="${customer.address}" data-age="${customer.age}">
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.address}</td>
+                    <td>${customer.age}</td>
+                </tr>
+                `);
+            });
+
+            // Attach click event
+            $("#customer_tbody tr").click(function () {
+                let id = $(this).attr("data-id");
+                let name = $(this).attr("data-name");
+                let address = $(this).attr("data-address");
+                let age = $(this).attr("data-age");
+
+                $("#id").val(id);
+                $("#name").val(name);
+                $("#address").val(address);
+                $("#age").val(age);
+            });
         },
-        error: function(error) {
-            console.error("Error Saving Customer:", error);
-            alert("Failed to save customer.");
+        error: function (error) {
+            alert("Failed to load customer data!");
+            console.error(error);
         }
     });
+}
+
+// Call function when the page loads
+$(document).ready(function () {
+    getCustomers();
+});
+
+//save customer
+$("#saveBtn").click((e) => {
+    const customer = {
+        id: $("#id").val(),
+        name: $("#name").val(),
+        address: $("#address").val(),
+        age: $("#age").val()
+    }
+
+    $.ajax({
+        url: (baseURL + "/save"),
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(customer),
+        success: function (response) {
+            alert("Customer Saved Success")
+            getCustomers();
+            clearForm();
+        },
+        error: function (error) {
+            alert("Customer not  Saved Success")
+        }
+    });
+});
+
+//update customer
+$("#updateBtn").click(function () {
+    const customer = {
+        id: $("#id").val(),
+        name: $("#name").val(),
+        address: $("#address").val(),
+        age: $("#age").val()
+    }
+
+    $.ajax({
+        url: (baseURL + "/update"),
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(customer),
+        success: function (response) {
+            getCustomers();
+            clearForm();
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+});
+
+//delete customer
+$("#deleteBtn").click(function () {
+    const id = $("#id").val();
+
+    $.ajax({
+        url: (baseURL + "/delete/" + id),
+        method: "DELETE",
+        success: function (response) {
+            getCustomers();
+            clearForm();
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+});
+
+//clear form
+function clearForm() {
+    $("#id").val("");
+    $("#name").val("");
+    $("#address").val("");
+    $("#age").val("");
 }
